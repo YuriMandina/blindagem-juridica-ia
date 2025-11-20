@@ -3,7 +3,7 @@ from core import get_llm_response
 
 # Configuração da Página
 st.set_page_config(
-    page_title="Juridical Shield AI",
+    page_title="Blindagem Jurídica AI",
     page_icon="⚖️",
     layout="wide"
 )
@@ -35,9 +35,10 @@ with st.sidebar:
     confidence_threshold = st.slider("Nível de Rigor (Temperatura)", 0.0, 1.0, 0.1)
     st.markdown("---")
     st.caption("Desenvolvido por Yuri Mandina")
+    st.caption("Ferramenta para suporte jurídico automatizado. Não substitui um advogado especialista.")
 
 # Corpo Principal
-st.markdown('<h1 class="main-header">Juridical Shield AI 🛡️</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header">Blindagem Jurídica AI 🛡️</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-header">Automação de Análise Contratual e Blindagem Jurídica</p>', unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 1])
@@ -81,7 +82,7 @@ with col2:
 st.markdown("---")
 st.markdown(
     "<div style='text-align: center; color: gray;'>"
-    "Juridical Shield AI © 2025 | Powered by LangChain & Groq"
+    "Blindagem Jurídica AI © 2025 | Powered by LangChain & Groq"
     "</div>", 
     unsafe_allow_html=True
 )
