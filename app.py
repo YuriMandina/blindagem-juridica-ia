@@ -1,88 +1,148 @@
 import streamlit as st
 from core import get_llm_response
+from utils import extract_text_from_pdf
 
-# Configuração da Página
+# --- Configuração da Página ---
 st.set_page_config(
     page_title="Blindagem Jurídica AI",
     page_icon="⚖️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# CSS
+# --- Design System (CSS Customizado) ---
 st.markdown("""
 <style>
-    .main-header {font-size: 2.5rem; color: #EA1D2C;}
-    .sub-header {font-size: 1.2rem; color: #666;}
+    .main-header {
+        font-family: 'Helvetica Neue', sans-serif;
+        font-size: 3rem; 
+        color: #EA1D2C; 
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+    .sub-header {
+        font-family: 'Helvetica Neue', sans-serif;
+        font-size: 1.2rem; 
+        color: #555; 
+        margin-bottom: 2rem;
+    }
+    .card {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+    }
     .stButton>button {
         background-color: #EA1D2C;
         color: white;
-        border-radius: 5px;
-        height: 3em;
+        font-weight: bold;
+        border-radius: 8px;
+        height: 3.5em;
         width: 100%;
+        border: none;
+        transition: all 0.3s;
+    }
+    .stButton>button:hover {
+        background-color: #c91924;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Sidebar
+# --- Sidebar ---
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/2230/2230606.png", width=80)
-    st.title("Controles")
-    st.markdown("---")
+    st.markdown("### ⚙️ Configuração do Agente")
+    
     st.info(
-        "Este agente utiliza **Llama 3.3 70B Versatile** via Groq para "
-        "analisar riscos contratuais com base na legislação brasileira."
+        "**Modelo Ativo:** Llama 3.3 70B (Groq)\n\n"
+        "**RAG:** Ativado (Jurisprudência STF)\n\n"
+        "**OCR:** Ativado (PDF Plumber)"
     )
-    confidence_threshold = st.slider("Nível de Rigor (Temperatura)", 0.0, 1.0, 0.1)
+    
+    st.markdown("---")
+    confidence = st.slider("🎚️ Nível de Rigor", 0.0, 1.0, 0.2, help="0 = Mais conservador, 1 = Mais criativo")
     st.markdown("---")
     st.caption("Desenvolvido por Yuri Mandina")
-    st.caption("Ferramenta para suporte jurídico automatizado. Não substitui um advogado especialista.")
+    st.caption("Uso destinado para suporte na analise contratural e não substitui consultoria jurídica profissional.")
 
-# Corpo Principal
-st.markdown('<h1 class="main-header">Blindagem Jurídica AI 🛡️</h1>', unsafe_allow_html=True)
-st.markdown('<p class="sub-header">Automação de Análise Contratual e Blindagem Jurídica</p>', unsafe_allow_html=True)
+# --- Header ---
+st.markdown('<div class="main-header">Blindagem Jurídica AI 🛡️</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Agente de Análise Contratual com RAG e OCR Integrados</div>', unsafe_allow_html=True)
 
-col1, col2 = st.columns([1, 1])
+# --- Layout Principal ---
+col1, col2 = st.columns([1, 1], gap="large")
 
-input_contract = ""
+# Variável para armazenar o texto final
+final_text_input = ""
 
 with col1:
-    st.subheader("📄 Documento Original")
-    input_contract = st.text_area(
-        "Cole o texto do contrato aqui:",
-        height=500,
-        placeholder="EX: CONTRATO DE PRESTAÇÃO DE SERVIÇOS..."
-    )
+    st.markdown("### 📥 Entrada de Documento")
     
-    analyze_btn = st.button("🔍 Analisar Riscos e Blindagem")
+    # Tabs para escolher método de entrada
+    tab_text, tab_file = st.tabs(["📝 Colar Texto", "📂 Upload PDF"])
+    
+    with tab_text:
+        text_input = st.text_area(
+            "Cole o contrato aqui:",
+            height=400,
+            placeholder="COLE O TEXTO DO CONTRATO AQUI..."
+        )
+        if text_input:
+            final_text_input = text_input
+
+    with tab_file:
+        uploaded_file = st.file_uploader("Carregar PDF (Texto ou Digitalizado)", type="pdf")
+        if uploaded_file is not None:
+            with st.spinner("Extraindo texto do PDF..."):
+                extracted_text = extract_text_from_pdf(uploaded_file)
+                if "Erro" in extracted_text:
+                    st.error(extracted_text)
+                else:
+                    st.success("PDF Processado com sucesso!")
+                    st.text_area("Pré-visualização", extracted_text, height=200, disabled=True)
+                    final_text_input = extracted_text
+
+    st.markdown("---")
+    analyze_btn = st.button("🚀 INICIAR ANÁLISE BLINDADA")
 
 with col2:
-    st.subheader("🤖 Análise da IA")
+    st.markdown("### 📊 Relatório de Inteligência")
     
-    if analyze_btn and input_contract:
-        with st.spinner("O Agente está lendo e cruzando dados com a legislação..."):
-            try:
-                # Chamada ao Backend
-                result = get_llm_response(input_contract, confidence_threshold)
-                
-                # Renderização do Resultado
-                st.markdown(result)
-                
-                # Feedback Visual de Sucesso
-                st.success("Análise concluída com sucesso!")
-                
-            except Exception as e:
-                st.error(f"Ocorreu um erro sistêmico: {e}")
-                
-    elif analyze_btn and not input_contract:
-        st.warning("Por favor, insira um texto de contrato para analisar.")
-    else:
-        st.info("Aguardando input para iniciar a análise...")
+    if analyze_btn:
+        if not final_text_input:
+            st.warning("⚠️ Por favor, forneça um texto ou faça upload de um PDF.")
+        else:
+            # Container visual para o resultado
+            result_container = st.container()
+            
+            with result_container:
+                with st.status("🤖 Agente trabalhando...", expanded=True) as status:
+                    st.write("🔍 Consultando base vetorial (STF)...")
+                    # O RAG acontece dentro do get_llm_response, mas simulamos steps visuais para UX
+                    st.write("🧠 Processando lógica jurídica com Llama 3.3...")
+                    
+                    try:
+                        result = get_llm_response(final_text_input, confidence)
+                        status.update(label="✅ Análise Completa!", state="complete", expanded=False)
+                        
+                        st.markdown('<div class="card">', unsafe_allow_html=True)
+                        st.markdown(result)
+                        st.markdown('</div>', unsafe_allow_html=True)
+                        
+                    except Exception as e:
+                        status.update(label="❌ Erro no Processamento", state="error")
+                        st.error(f"Erro técnico: {e}")
 
-# Rodapé
+    elif not analyze_btn:
+        st.info("Aguardando documento para iniciar o processamento...")
+
+# --- Footer ---
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: gray;'>"
-    "Blindagem Jurídica AI © 2025 | Powered by LangChain & Groq"
+    "<div style='text-align: center; color: #888; font-size: 0.8rem;'>"
+    " Yuri Mandina - 2025<br>"
+    "Powered by <b>LangChain, Groq, FAISS & HuggingFace</b>"
     "</div>", 
     unsafe_allow_html=True
 )

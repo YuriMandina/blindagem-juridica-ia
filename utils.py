@@ -44,6 +44,7 @@ def setup_rag_vectorstore():
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
     # 4. Criar Vector Store
+    print(f"DEBUG: Carregados {len(docs)} chunks de conhecimento na memória.")
     vector_store = FAISS.from_documents(docs, embeddings)
     
     return vector_store
