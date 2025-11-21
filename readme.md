@@ -39,5 +39,38 @@ O sistema atua como uma "primeira linha de defesa", sugerindo reescritas de blin
 
 1. **Clone o repositório:**
    ```bash
-    git clone https://github.com/YuriMandina/blindagem-juridica-ia.git
+   git clone https://github.com/YuriMandina/blindagem-juridica-ia.git
    cd blindagem-juridica-ia
+
+2. Instale as dependências:
+   ```bash
+   pip install -r requirements.txt
+   
+3. Configure a Segurança: Crie um arquivo .env na raiz do projeto e adicione sua chave da Groq:
+   GROQ_API_KEY=gsk_sua_chave_aqui_xxxxxxxxxxxxx
+
+* Nota: O arquivo .env não deve ser comitado no Git para segurança.
+
+4. Verifique a Base de Conhecimento: Certifique-se que o arquivo knowledge_base.txt (com as jurisprudências) está na raiz do projeto.
+
+5. Execute a aplicação:
+   ```bash
+   streamlit run app.
+   
+### 📊 Estrutura de Diretórios
+blindagem-juridica-ia/
+├── app.py             # Frontend (Streamlit)
+├── core.py            # Lógica do Agente e Prompt Engineering
+├── utils.py           # Pipeline RAG (FAISS) e OCR
+├── knowledge_base.txt # Dataset Jurídico (STF/CLT)
+├── requirements.txt   # Dependências
+└── .env               # Variáveis de Ambiente (Não versionado)
+
+### 📈 Roadmap e Melhorias Futuras
+* Adicionar leitura de arquivos .docx (Word).
+
+* Implementar histórico de análises com cache local.
+
+* Expandir base de conhecimento para legislação tributária.
+
+* Desenvolvido por Yuri Mandina. Projeto focado em Engenharia de Software e GenAI.
