@@ -47,6 +47,7 @@ O sistema atua como uma "primeira linha de defesa", sugerindo reescritas de blin
    pip install -r requirements.txt
    
 3. Configure a Segurança: Crie um arquivo .env na raiz do projeto e adicione sua chave da Groq:
+   ```bash
    GROQ_API_KEY=gsk_sua_chave_aqui_xxxxxxxxxxxxx
 
 * Nota: O arquivo .env não deve ser comitado no Git para segurança.
@@ -58,13 +59,13 @@ O sistema atua como uma "primeira linha de defesa", sugerindo reescritas de blin
    streamlit run app.
    
 ### 📊 Estrutura de Diretórios
-blindagem-juridica-ia/
-├── app.py             # Frontend (Streamlit)
-├── core.py            # Lógica do Agente e Prompt Engineering
-├── utils.py           # Pipeline RAG (FAISS) e OCR
-├── knowledge_base.txt # Dataset Jurídico (STF/CLT)
-├── requirements.txt   # Dependências
-└── .env               # Variáveis de Ambiente (Não versionado)
+blindagem-juridica-ia/<br>
+├── app.py             # Frontend (Streamlit)   <br>
+├── core.py            # Lógica do Agente e Prompt Engineering <br>
+├── utils.py           # Pipeline RAG (FAISS) e OCR   <br>
+├── knowledge_base.txt # Dataset Jurídico (STF/CLT)   <br>
+├── requirements.txt   # Dependências  <br>
+└── .env               # Variáveis de Ambiente (Não versionado)   <br>
 
 ### 📈 Roadmap e Melhorias Futuras
 * Adicionar leitura de arquivos .docx (Word).
