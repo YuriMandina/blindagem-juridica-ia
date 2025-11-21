@@ -86,7 +86,7 @@ st.markdown(f"""
 
     /* Text Area - Visual de Editor de Código */
     .stTextArea textarea {{
-        background-color: #0d1117 !important; /* Mais escuro que o card */
+        background-color: #0d1117 !important;
         color: #c9d1d9 !important;
         font-family: 'Consolas', 'Monaco', monospace !important;
         font-size: 0.9rem;
@@ -210,9 +210,9 @@ with c1:
         
         with tab_editor:
             text_input = st.text_area(
-                label="Editor Invisível", # Label hidden by CSS or logic if needed, keeping for accessibility
+                label="Editor Invisível",
                 placeholder="Cole o texto integral do contrato ou peça jurídica aqui...",
-                height=HEIGHT_EDITOR - 80, # Ajuste matemático para caber nas tabs
+                height=HEIGHT_EDITOR - 80,
                 label_visibility="collapsed",
                 key="editor_widget"
             )
